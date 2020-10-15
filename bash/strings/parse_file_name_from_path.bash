@@ -23,18 +23,18 @@ function parse_file_name_from_path()
 {
     # parameters
     local file_path_in="$1"
-    
+
     # declare variables
     local file_path_token_array=
     local file_name=
-    
+
     # parse the last item off the file path.
-    IFS='_' read -ra file_path_token_array <<< "$file_path_in"
+    IFS=${slash} read -ra file_path_token_array <<< "$file_path_in"
     for i in "${file_path_token_array[@]}"; do
         # process "$i"
         file_name="$i"
     done
-    
+
     file_name_out="$file_name"
 
     # DEBUG
