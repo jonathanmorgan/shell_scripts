@@ -31,8 +31,17 @@ function parse_file_name_from_path()
     # parse the last item off the file path.
     IFS=${slash} read -ra file_path_token_array <<< "$file_path_in"
     for i in "${file_path_token_array[@]}"; do
+
         # process "$i"
         file_name="$i"
+
+        if [[ $DEBUG = true ]]
+        then
+
+            echo "--------> file_token: ${file_name}"
+
+        fi
+
     done
 
     file_name_out="$file_name"
