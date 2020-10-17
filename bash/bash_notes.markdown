@@ -42,17 +42,20 @@
     -   [wildcards in scripts](#wildcards-in-scripts)
     -   [Getopts (with detailed examples)](#Getopts-with-detailed-examples)
 
+        - [Example](#Example)
+        - [Example within a bash function](#Example-within-a-bash-function)
+
 # Notes
 
 ## include .bashrc in .profile/.bash\_profile
  
     # if running bash
 
-    if \[ -n "$BASH\_VERSION" \]; then
+    if [ -n "$BASH\_VERSION" ]; then
 
-        \# include .bashrc if it exists
+        # include .bashrc if it exists
 
-        if \[ -f "$HOME/.bashrc" \]; then
+        if [ -f "$HOME/.bashrc" ]; then
 
             . "$HOME/.bashrc"
 
@@ -64,7 +67,7 @@
 
     # set PATH so it includes user's private bin if it exists
 
-    if \[ -d "$HOME/bin" \] ; then
+    if [ -d "$HOME/bin" ] ; then
 
         PATH="$HOME/bin:$PATH"
 
@@ -182,7 +185,7 @@
 
         file="/etc/hosts"
 
-        if \[ -f "$file" \]
+        if [ -f "$file" ]
         then
 
                 echo "$file found."
@@ -393,7 +396,7 @@
 
 - populated - non-empty string - use "-n":
 
-            if \[ -n "${1}" \]
+            if [ -n "${1}" ]
             then
                 echo "var is set to '${1}'"
             else
@@ -445,7 +448,9 @@
     - [https://www.ibm.com/developerworks/library/l-bash-parameters/index.html](https://www.ibm.com/developerworks/library/l-bash-parameters/index.html)
     - [http://www.linuxcommand.org/lc3\_wss0120.php](http://www.linuxcommand.org/lc3_wss0120.php)
 
--   Example:
+### Example
+
+- Example:
 
         #===============================================================================
         # ==> process options
@@ -642,6 +647,8 @@
         fi
         
         echo ""
+
+### Example within a bash function
 
 - Example within a bash function:
 
