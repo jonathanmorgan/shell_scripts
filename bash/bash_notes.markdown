@@ -8,39 +8,40 @@
 
 -   [Scripting](#Scripting)
 
+    - [Arrays](#Arrays)
     - [Numbers](#Numbers)
 
         - [Arithmetic](#Arithmetic)
 
-    -   [Paths](#Paths)
+    - [Paths](#Paths)
 
-        -   [check if file or directory exists](#check-if-file-or-directory-exists)
-        -   [Convert relative path to absolute](#Convert-relative-path-to-absolute)
-        -   [Create directory if it does not exist](#Create-directory-if-it-does-not-exist)
+        - [check if file or directory exists](#check-if-file-or-directory-exists)
+        - [Convert relative path to absolute](#Convert-relative-path-to-absolute)
+        - [Create directory if it does not exist](#Create-directory-if-it-does-not-exist)
 
-    -   [Program control](#Program-control)
+    - [Program control](#Program-control)
 
-        -   [If-then-elif-else](#If-then-elif-else)
+        - [If-then-elif-else](#If-then-elif-else)
 
-    -   [strings](#strings)
+    - [strings](#strings)
 
-        -   [String comparison](#String-comparison)
+         - [String comparison](#String-comparison)
 
-            -   [Empty strings](#Empty-strings)
-            -   [Test command (sh or bash)](#Test-command-sh-or-bash)
-            -   [Pattern matching in bash](#Pattern-matching-in-bash)
+            - [Empty strings](#Empty-strings)
+            - [Test command (sh or bash)](#Test-command-sh-or-bash)
+            - [Pattern matching in bash](#Pattern-matching-in-bash)
 
-        -   [string parsing](#string-parsing)
-        -   [File paths](#File-paths)
+        - [string parsing](#string-parsing)
+        - [File paths](#File-paths)
 
-    -   [variables](#variables)
+    - [variables](#variables)
 
-        -   [Check if set or populated](#Check-if-set-or-populated)
-        -   [Use variable value in reference to a separate variable](#Use-variable-value-in-reference-to-a-separate-variable)
-        -   [Variable expansion operators - default if variable not set](#Variable-expansion-operators---default-if-variable-not-set)
+        - [Check if set or populated](#Check-if-set-or-populated)
+        - [Use variable value in reference to a separate variable](#Use-variable-value-in-reference-to-a-separate-variable)
+        - [Variable expansion operators - default if variable not set](#Variable-expansion-operators---default-if-variable-not-set)
 
-    -   [wildcards in scripts](#wildcards-in-scripts)
-    -   [Getopts (with detailed examples)](#Getopts-with-detailed-examples)
+    - [wildcards in scripts](#wildcards-in-scripts)
+    - [Getopts (with detailed examples)](#Getopts-with-detailed-examples)
 
         - [Example](#Example)
         - [Example within a bash function](#Example-within-a-bash-function)
@@ -161,6 +162,34 @@
     - [https://www.ibm.com/developerworks/linux/library/l-tip-prompt/](https://www.ibm.com/developerworks/linux/library/l-tip-prompt/)
 
 # Scripting
+
+## Arrays
+
+- declare an array:
+
+        my_array=()
+        
+- length of array:
+
+        array_count=${#my_Array[@]}
+        
+- check if array is empty:
+
+        error_count=${#errors[@]}
+        if [ ${error_count} -eq 0 ]; then
+            echo "No errors, hooray"
+        else
+            echo "Oops, something went wrong..."
+        fi
+        
+    - from: https://serverfault.com/questions/477503/check-if-array-is-empty-in-bash
+
+- loop over items in an array:
+
+        for item in "${arr[@]}"
+        do
+            echo $item
+        done
 
 ## Numbers
 
