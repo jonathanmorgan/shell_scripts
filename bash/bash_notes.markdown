@@ -173,6 +173,24 @@
 
         array_count=${#my_Array[@]}
         
+    Examples:
+    
+        error_status_array=()
+        error_status_array+=( "1" )
+        error_status_array+=( "2" )
+        error_status_array+=( "3" )
+        array_count=${#error_status_array[@]}
+        echo "Array Count: ${array_count}" # 3
+
+        error_status_array=()
+        error_status_array+=( "" )
+        array_count=${#error_status_array[@]}
+        echo "Array Count: ${array_count}" # 1
+
+        error_status_array=()
+        array_count=${#error_status_array[@]}
+        echo "Array Count: ${array_count}" # 0
+
 - check if array is empty:
 
         error_count=${#errors[@]}
