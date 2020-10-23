@@ -432,7 +432,7 @@
 
 - Check if a variable is:
 
-    - set - use "-z":
+    - not set - use "-z" (is variable empty? true = not set, false = set):
 
             if [ -z ${1} ]
             then
@@ -441,7 +441,7 @@
                 echo "var is set to '$1'"
             fi
 
-- populated - non-empty string - use "-n":
+    - populated/set - use "-n" (is variable populated/set? true = set, false = not set):
 
             if [ -n "${1}" ]
             then
