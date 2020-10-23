@@ -277,6 +277,18 @@
 - Notes:
 
     - [https://www.tutorialkart.com/bash-shell-scripting/bash-else-if/](https://www.tutorialkart.com/bash-shell-scripting/bash-else-if/)
+    
+- Example, including compound expression:
+
+        #!/bin/bash
+
+        n=2
+
+        if [ $n -eq 1 ]; then
+            echo value of n is 1
+        elif [[ $n -eq 2 && $n -lt 5 ]]; then
+            echo value of n is less than threshold
+        fi
 
 ## Strings
 
@@ -319,7 +331,7 @@
 
 - use -z to return true for empty strings.
 - Use -n to return true for non-empty strings.
-- For more details, see Variables `-->` [Check if set or populated](#Check if set or populated)
+- For more details, see Variables `-->` [Check if set or populated](#Check-if-set-or-populated)
 - Example:
 
         # declare variables - debug
