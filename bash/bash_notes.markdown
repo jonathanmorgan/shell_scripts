@@ -218,8 +218,8 @@
     - [https://linuxize.com/post/bash-increment-decrement-variable/](https://linuxize.com/post/bash-increment-decrement-variable/)
     -   Example:
 
-            i = $( ( i+1 ) )
-            i = $( ( i-1 ) )
+            i = $(( i+1 ))
+            i = $(( i-1 ))
 
 ## Paths
 
