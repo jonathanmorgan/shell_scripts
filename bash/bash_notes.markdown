@@ -432,7 +432,7 @@
 
 - Check if a variable is:
 
-    - not set - use "-z" (is variable empty? true = not set, false = set):
+    - empty/not set - use "-z" (is variable empty? true = empty/not set, false = not empty/is set):
 
             if [ -z ${1} ]
             then
