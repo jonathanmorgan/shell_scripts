@@ -3,25 +3,32 @@
 - [Notes](#Notes)
 
     - [include .bashrc in .profile/.bash_profile](#include-bashrc-in-profilebash_profile)
-    - [include user’s private ~/bin in path](#include-users-private-bin-in-path) 
+    - [include user’s private ~/bin in path](#include-users-private-bin-in-path)
     - [Setting prompt content and colors](#Setting-prompt-content-and-colors)
 
 -   [Scripting](#Scripting)
 
     - [Arrays](#Arrays)
+    - [Booleans](#Booleans)
+
+        - [Boolean comparison](#Boolean-comparison)
+
     - [Numbers](#Numbers)
 
         - [Arithmetic](#Arithmetic)
+        - [Number comparison](#Number-comparison)
 
     - [Paths](#Paths)
 
         - [check if file or directory exists](#check-if-file-or-directory-exists)
         - [Convert relative path to absolute](#Convert-relative-path-to-absolute)
         - [Create directory if it does not exist](#Create-directory-if-it-does-not-exist)
+        - [Get folder where script lives](#Get-folder-where-script-lives)
 
     - [Program control](#Program-control)
 
         - [If-then-elif-else](#If-then-elif-else)
+        - [run command named in variable](#run-command-named-in-variable)
 
     - [strings](#strings)
 
@@ -49,7 +56,7 @@
 # Notes
 
 ## include .bashrc in .profile/.bash\_profile
- 
+
     # if running bash
 
     if [ -n "$BASH\_VERSION" ]; then
@@ -72,7 +79,7 @@
 
         PATH="$HOME/bin:$PATH"
 
-    fi 
+    fi
 
 ## Setting prompt content and colors
 
@@ -87,7 +94,7 @@
             - `\h` = hostname
             - `\w` = path to current working directory
 
-                - `\W` = just current directory, no path 
+                - `\W` = just current directory, no path
 
             - `\$` outputs dollar sign
             - More entities: [http://www.ibm.com/developerworks/linux/library/l-tip-prompt/](http://www.ibm.com/developerworks/linux/library/l-tip-prompt/)
@@ -168,13 +175,13 @@
 - declare an array:
 
         my_array=()
-        
+
 - length of array:
 
         array_count=${#my_Array[@]}
-        
+
     Examples:
-    
+
         error_status_array=()
         error_status_array+=( "1" )
         error_status_array+=( "2" )
@@ -199,7 +206,7 @@
         else
             echo "Oops, something went wrong..."
         fi
-        
+
     - from: https://serverfault.com/questions/477503/check-if-array-is-empty-in-bash
 
 - loop over items in an array:
@@ -208,6 +215,14 @@
         do
             echo $item
         done
+
+## Booleans
+
+### Boolean comparison
+
+To compare boolean values in if, while, etc., use "`[]`" or "`[[]]`" operators, and use equal sign.
+
+Example: `if [[ $DEBUG = true ]]`
 
 ## Numbers
 
@@ -220,6 +235,35 @@
 
             i = $(( i+1 ))
             i = $(( i-1 ))
+
+### Number comparison
+
+- number comparison operators can be used in either "`[]`" or "`[[]]`" operator with `if`, `while`, etc.
+- operators (followed in parens by the equivalent in double-parenthesis operator):
+
+    - `-eq`: equal (in double parens, "`==`")
+    - `-ne`: not equal ("`!=`")
+    - `-gt`: greater than ("`>`")
+    - `-lt`: less than ("`<`")
+    - `-ge`: greater than or equal to ("`>=`")
+    - `-le`: less than or equal to ("`<=`")
+
+- example:
+
+        # get the current date and time.
+        current_datetime=$(date -u +%s)
+
+        # are we past our end time?
+        if [[ $current_datetime -gt $end_datetime ]]
+        then
+
+            # we are. do not continue.
+            keep_going_out=false
+            completion_message_out="Current datetime ( ${current_datetime} ) is greater than end datetime ( ${end_datetime} ). Testing complete!"
+
+        fi
+
+- from: [https://www.golinuxcloud.com/bash-compare-numbers/](https://www.golinuxcloud.com/bash-compare-numbers/)
 
 ## Paths
 
@@ -254,6 +298,12 @@
 
 - [https://stackoverflow.com/questions/4906579/how-to-use-bash-to-create-a-folder-if-it-doesnt-already-exist](https://stackoverflow.com/questions/4906579/how-to-use-bash-to-create-a-folder-if-it-doesnt-already-exist)
 
+### Get folder where script lives
+
+To get directory path of currently running script: `my_directory=$( dirname $( readlink -f "$0" ) )`
+
+- from: [https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself](https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself)
+
 ## Program control
 
 ### If-then-elif-else
@@ -277,7 +327,7 @@
 - Notes:
 
     - [https://www.tutorialkart.com/bash-shell-scripting/bash-else-if/](https://www.tutorialkart.com/bash-shell-scripting/bash-else-if/)
-    
+
 - Example, including compound expression:
 
         #!/bin/bash
@@ -290,34 +340,57 @@
             echo value of n is less than threshold
         fi
 
+### run command named in variable
+
+The simplest option is to put a dollar reference to the variable in your script: `$command_variable`
+
+You can also use eval: `eval "$command_variable"`
+
+- More options: [https://stackoverflow.com/questions/33387263/invoke-function-whose-name-is-stored-in-a-variable-in-bash](https://stackoverflow.com/questions/33387263/invoke-function-whose-name-is-stored-in-a-variable-in-bash)
+
+### sleep command
+
+To pause a program for a period of time, use sleep: [https://www.lifewire.com/use-linux-sleep-command-3572060](https://www.lifewire.com/use-linux-sleep-command-3572060)
+
+        sleep <delay>
+
+Delay format:
+
+- `#s` - number of seconds (30 seconds: "`sleep 30s`")
+- `#m` - number of minutes (15 minutes: "`sleep 15m`")
+- `#h` - number of hours
+- `#d` - number of days
+
+Where the number can be an integer or a decimal.
+
 ## Strings
 
 ### String comparison
 
-- Example using "`[]`" command: 
+- Example using "`[]`" command:
 
         #!/bin/bash
 
-        VAR1="Linuxize"  
+        VAR1="Linuxize"
         VAR2="Linuxize"
 
-        if [ "$VAR1" = "$VAR2" ]; then  
-            echo "Strings are equal."  
-        else  
-            echo "Strings are not equal."  
+        if [ "$VAR1" = "$VAR2" ]; then
+            echo "Strings are equal."
+        else
+            echo "Strings are not equal."
         Fi
 
 - Example using "`[[]]`" command:
 
         #!/bin/bash
 
-        read -p "Enter first string: " VAR1  
+        read -p "Enter first string: " VAR1
         read -p "Enter second string: " VAR2
 
-        if [[ "$VAR1" == "$VAR2" ]]; then  
-            echo "Strings are equal."  
-        else  
-            echo "Strings are not equal."  
+        if [[ "$VAR1" == "$VAR2" ]]; then
+            echo "Strings are equal."
+        else
+            echo "Strings are not equal."
         fi
 
 - Links:
@@ -335,14 +408,14 @@
 - Example:
 
         # declare variables - debug
-        
+
         if [[ -z "$DEBUG" ]]
-        
+
         then
-        
+
             # debug off by default.
             DEBUG=false
-        
+
         fi
 
 #### Test command (sh or bash)
@@ -353,17 +426,17 @@
 
         Sourcesystem="ABC"
 
-        if [ "$Sourcesystem" = "XYZ" ]; then  
-            echo "Sourcesystem Matched"  
-        else  
-            echo "Sourcesystem is NOT Matched $Sourcesystem"  
+        if [ "$Sourcesystem" = "XYZ" ]; then
+            echo "Sourcesystem Matched"
+        else
+            echo "Sourcesystem is NOT Matched $Sourcesystem"
         fi;
 
 - Links:
 
     - [https://stackoverflow.com/questions/10849297/compare-a-string-using-sh-shell](https://stackoverflow.com/questions/10849297/compare-a-string-using-sh-shell)
 
- 
+
 #### Pattern matching in bash
 
 - Use the "`==`" operator with the "`[[`' command for pattern matching.
@@ -371,13 +444,13 @@
 
         #!/bin/bash
 
-        read -p "Enter first string: " VAR1  
+        read -p "Enter first string: " VAR1
         read -p "Enter second string: " VAR2
 
-        if [[ "$VAR1" == "$VAR2" ]]; then  
-            echo "Strings are equal."  
-        else  
-            echo "Strings are not equal."  
+        if [[ "$VAR1" == "$VAR2" ]]; then
+            echo "Strings are equal."
+        else
+            echo "Strings are not equal."
         fi
 
 - Links:
@@ -392,7 +465,7 @@
         function parse_CUSP_ID_number()
         {
 
-        
+
 
             # example CUSP ID: cusp_12345
             # parse on underscore, take the last token to get ID number.
@@ -442,7 +515,7 @@
 
 ### Check if set or populated
 
-- Check if a variable is:
+- Check if a variable is, inside either "`[]`" or "`[[]]`":
 
     - empty/not set - use "-z" (is variable empty? true = empty/not set, false = not empty/is set):
 
@@ -462,6 +535,9 @@
                 echo "var is empty"
             fi
 
+    - To check the opposite, you put a "`!`" in front of the "`-n`" or "`-z`", separated before and after by a space.
+
+- "`[]`" and "`[[]]`" are commands, so you must surround elements of the command with spaces, including spaces after the opening square bracket(s) and before the closing square bracket(s).
 - From: [https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash\#13864829](https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash#13864829)
 
 ### Use variable value in reference to a separate variable
@@ -527,7 +603,7 @@
         VAULT_MOUNT_POINT_IN=
         CONFIG_FILE_PATH_IN=
         HELP_FLAG_IN=
-        
+
         # Options: -s <file_size> -n <file_number> -v <vault_folder> -f <file_prefix> -d <data_source> -p <vault_device_prefix> -g <volume_group> -l <logical_volume> -m <data_source> -x
         #
         # WHERE:
@@ -546,7 +622,7 @@
         while getopts ":s:n:v:f:d:p:g:l:m:c:xh" opt; do
 
             case $opt in
-        
+
                 s) FILE_SIZE_IN="$OPTARG"
                 ;;
                 n) FILE_NUMBER_IN="$OPTARG"
@@ -573,31 +649,31 @@
                 ;;
                 \?) echo "Invalid option -$OPTARG" >&2
                 ;;
-            
+
             esac
-        
+
         done
-        
+
         # ==> External configuration file
-        
+
         if [[ $HELP_FLAG_IN = true ]]
         then
             add_error "Usage help displayed, no action taken."
         fi
-        
+
         if [[ $DEBUG = true ]]
         then
             echo "Config file path = \"${CONFIG_FILE_PATH_IN}\""
         fi
-        
+
         # do we have a config path?
         if [[ ! -z "${CONFIG_FILE_PATH_IN}" ]]
         then
-        
+
             # check to see if we are allowing config
             if [[ $ALLOW_CONFIG = true ]]
             then
-            
+
                 # we do. Does file at that path exist?
                 if [[ -f "${CONFIG_FILE_PATH_IN}" ]]
                 then
@@ -605,106 +681,106 @@
                     # it does. source it.
                     echo "Loading configuration from ${CONFIG_FILE_PATH_IN}"
                     source "${CONFIG_FILE_PATH_IN}"
-            
+
                 else
-            
+
                     # it does not. Error out.
                     add_error "!!!! ERROR - configuration file at path \"${CONFIG_FILE_PATH_IN}\" does not exist."
-            
+
                 fi
-            
+
             else
-            
+
                 # configuration not allowed. Error out.
                 add_error "!!!! ERROR - configuration file specified ( ${CONFIG_FILE_PATH_IN} ), but using a configuration file is not allowed."
-            
+
             fi
-            
+
         else
-            
+
             if [[ $DEBUG = true ]]
             then
-            
+
                 echo "No defaults file specified."
-            
+
             fi
-        
+
         fi
 
         # ==> Defaults:
-        
+
         # file number
         if [[ -z "$FILE_NUMBER_IN" ]]
         then
-        
+
             # no error - derive by counting files that match "$VAULT_FOLDER_IN/$FILE_PREFIX_IN\*"
             FILE_NUMBER_IN=-1
-        
+
         fi
-        
+
         # vault folder
         if [[ -z "$VAULT_FOLDER_IN" ]]
         then
 
             VAULT_FOLDER_IN="$DEFAULT_VAULT_FOLDER"
             echo ">>>> using default vault folder ( \"$VAULT_FOLDER_IN\" )."
-        
+
         fi
-        
+
         # vault file prefix
         if [[ -z "$FILE_PREFIX_IN" ]]
         then
-        
+
             FILE_PREFIX_IN="$DEFAULT_VAULT_FILE_PREFIX"
             echo ">>>> using default vault file prefix ( \"$FILE_PREFIX_IN\" )."
-        
+
         fi
-        
+
         # random source
         if [[ -z "$RANDOM_SOURCE_IN" ]]
         then
-        
+
             RANDOM_SOURCE_IN="$DEFAULT_RANDOM_SOURCE"
             echo ">>>> using default data source ( \"$DEFAULT_RANDOM_SOURCE\" )."
-        
+
         fi
-        
+
         # LUKS vault device prefix
         if [[ -z "$LUKS_VAULT_DEVICE_PREFIX_IN" ]]
         then
-        
+
             LUKS_VAULT_DEVICE_PREFIX_IN="$DEFAULT_LUKS_VAULT_DEVICE_PREFIX"
             echo ">>>> using default LUKS vault file prefix ( \"$DEFAULT_LUKS_VAULT_DEVICE_PREFIX\" )."
-        
+
         fi
-        
+
         # vault LVM volume group
         if [[ -z "$LVM_VAULT_VOLUME_GROUP_IN" ]]
         then
-        
+
             LVM_VAULT_VOLUME_GROUP_IN="$DEFAULT_LVM_VAULT_VOLUME_GROUP"
             echo ">>>> using default vault LVM volume group ( \"$DEFAULT_LVM_VAULT_VOLUME_GROUP\" )."
-        
+
         fi
-        
+
         # vault LVM logical volume
         if [[ -z "$LVM_VAULT_LOGICAL_VOLUME_IN" ]]
         then
-        
+
             LVM_VAULT_LOGICAL_VOLUME_IN="$DEFAULT_LVM_VAULT_LOGICAL_VOLUME"
             echo ">>>> using default vault LVM logical volume ( \"$DEFAULT_LVM_VAULT_LOGICAL_VOLUME\" )."
-        
+
         fi
-        
+
         # vault mount point
         if [[ -z "$VAULT_MOUNT_POINT_IN" ]]
         then
-        
+
             VAULT_MOUNT_POINT_IN="$DEFAULT_VAULT_MOUNT_POINT"
             echo ">>>> using default vault mount point ( \"$DEFAULT_VAULT_MOUNT_POINT\" )."
-        
+
         fi
-        
+
         echo ""
 
 ### Example within a bash function
@@ -720,7 +796,7 @@
 
         function run()
         {
-        
+
             #===============================================================================
             # ==> process options
             #===============================================================================
@@ -735,7 +811,7 @@
             local script_to_run_IN= #${5:-}
             local docker_custom_options_IN= #${6:=${DOCKER_CUSTOM_RUN_OPTIONS_IN}}
             local interactive_flag_IN=false
-            
+
             # Options: -p <project_folder_path> -d <data_folder_path> -i <input_folder_path> -o <output_folder_path> -m <image_name> -c <container_name> -s <script_to_run> -t <docker_custom_options> -x
             #
             # WHERE:
@@ -748,15 +824,15 @@
             # ==> -s <script_to_run> = (optional) script to run inside the docker container after it is started.
             # ==> -t <docker_custom_options> = (optional) custom docker options to add to the end of the run command when you run the container (and "t" = first letter in "options" not taken by another option).
             # ==> -x = (optional) boolean interactive mode flag. If present, runs in interactive mode.
-            
+
             local OPTIND
             local OPTARG
             local option
             while getopts ":p:d:i:o:m:c:s:t:x" option
             do
-            
+
                 case $option in
-                
+
                     p) project_folder_path_IN="$OPTARG"
                     ;;
                     d) data_folder_path_IN="$OPTARG"
@@ -777,75 +853,75 @@
                     ;;
                     \?) echo "Invalid option -$OPTARG" >&2
                     ;;
-                
+
                 esac
-            
+
             done
-            
+
             # declare variables
             local project_folder_path=
             local input_folder_path=
             local output_folder_path=
             local interactive_flag=
-            
+
             # set input and output folder paths.
-            
+
             # do we have a data folder path?
             if [[ ! -z "${data_folder_path_IN}" ]]
             then
-            
+
                 # yes. Use it to set input and output folder.
                 input_folder_path="${data_folder_path_IN}/input"
                 output_folder_path="${data_folder_path_IN}/output"
-            
+
             else
-            
+
                 # do we have input and output folder paths?
                 if [[ ! -z "${input_folder_path_IN}" ]] && [[ ! -z "${output_folder_path_IN}" ]]
                 then
-            
+
                     # we do have input and output folders.
                     input_folder_path="${input_folder_path_IN}"
                     output_folder_path="${output_folder_path_IN}"
-            
+
                 else
-            
+
                     add_error "Incomplete input and output file paths: data=${data_folder_path_IN}; input=${input_folder_path_IN}; output=${output_folder_path_IN};"
-            
+
                 fi
-            
+
             fi
-            
+
             # set interactive_flag
             if [[ $interactive_flag_IN = true ]]
             then
-            
+
                 interactive_flag="-it"
-            
+
             fi
-            
+
             # OK to process?
             if [[ $ok_to_process = true ]]
             then
-            
+
                 # convert to absolute paths.
 
                 # project folder path
                 absolute_path "${project_folder_path_IN}"
                 project_folder_path="${absolute_path_OUT}"
-            
+
                 # input folder path
                 absolute_path "${input_folder_path}"
                 input_folder_path="${absolute_path_OUT}"
-            
+
                 # output folder path
                 absolute_path "${output_folder_path}"
                 output_folder_path="${absolute_path_OUT}"
-                
+
                 # DEBUG
                 if [[ $DEBUG = true ]]
                 then
-                
+
                     echo "In run:"
                     echo "- project_folder_path_IN: \"${project_folder_path_IN}\""
                     echo "- project_folder_path: \"${project_folder_path}\""
@@ -857,15 +933,15 @@
                     echo "- interactive_flag: \"${interactive_flag}\""
 
                 fi
-                
+
                 # remove JSON files from output.
                 docker run ${docker_custom_options_IN} ${interactive_flag} -v \`pwd\`:/run_folder -v ${project_folder_path}:/project -v ${input_folder_path}:/data/input -v ${output_folder_path}:/data/output --name ${container_name_IN} ${image_name_IN} ${script_to_run_IN}
-                
+
             else
-                
+
                 echo "ERROR - docker container did not run."
                 output_errors
-                
+
             fi
-        
+
         } #-- END function run() --#
