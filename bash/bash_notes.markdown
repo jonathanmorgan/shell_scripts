@@ -9,6 +9,12 @@
 -   [Scripting](#Scripting)
 
     - [Arrays](#Arrays)
+
+        - [declare an array](#declare-an-array)
+        - [length of array](#length-of-array)
+        - [check if array is empty](#check-if-array-is-empty)
+        - [loop over items in an array](#loop-over-items-in-an-array)
+
     - [Booleans](#Booleans)
 
         - [Boolean comparison](#Boolean-comparison)
@@ -172,49 +178,65 @@
 
 ## Arrays
 
-- declare an array:
+Notes:
 
+- Arrays can not be assigned from one variable to another:
+
+        # does not work:
         my_array=()
+        my_array+=( "value1" )
+        my_array+=( "value2" )
+        my_array_reference="${my_array[@]}"
 
-- length of array:
+    'my_array_reference` will only contain the first item in the original array.
 
-        array_count=${#my_Array[@]}
+    - More details: [https://stackoverflow.com/questions/12303974/assign-array-to-variable](https://stackoverflow.com/questions/12303974/assign-array-to-variable)
 
-    Examples:
+### declare an array
 
-        error_status_array=()
-        error_status_array+=( "1" )
-        error_status_array+=( "2" )
-        error_status_array+=( "3" )
-        array_count=${#error_status_array[@]}
-        echo "Array Count: ${array_count}" # 3
+    my_array=()
 
-        error_status_array=()
-        error_status_array+=( "" )
-        array_count=${#error_status_array[@]}
-        echo "Array Count: ${array_count}" # 1
+### length of array
 
-        error_status_array=()
-        array_count=${#error_status_array[@]}
-        echo "Array Count: ${array_count}" # 0
+To count the items in an array:
 
-- check if array is empty:
+    array_count=${#my_Array[@]}
 
-        error_count=${#errors[@]}
-        if [ ${error_count} -eq 0 ]; then
-            echo "No errors, hooray"
-        else
-            echo "Oops, something went wrong..."
-        fi
+Examples:
 
-    - from: https://serverfault.com/questions/477503/check-if-array-is-empty-in-bash
+    error_status_array=()
+    error_status_array+=( "1" )
+    error_status_array+=( "2" )
+    error_status_array+=( "3" )
+    array_count=${#error_status_array[@]}
+    echo "Array Count: ${array_count}" # 3
 
-- loop over items in an array:
+    error_status_array=()
+    error_status_array+=( "" )
+    array_count=${#error_status_array[@]}
+    echo "Array Count: ${array_count}" # 1
 
-        for item in "${arr[@]}"
-        do
-            echo $item
-        done
+    error_status_array=()
+    array_count=${#error_status_array[@]}
+    echo "Array Count: ${array_count}" # 0
+
+### check if array is empty
+
+    error_count=${#errors[@]}
+    if [ ${error_count} -eq 0 ]; then
+        echo "No errors, hooray"
+    else
+        echo "Oops, something went wrong..."
+    fi
+
+- from: https://serverfault.com/questions/477503/check-if-array-is-empty-in-bash
+
+### loop over items in an array
+
+    for item in "${arr[@]}"
+    do
+        echo $item
+    done
 
 ## Booleans
 
