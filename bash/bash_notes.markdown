@@ -24,12 +24,23 @@
         - [Arithmetic](#Arithmetic)
         - [Number comparison](#Number-comparison)
 
+    - [Output](#Output)
+
+        - [redirecting output when invoking script](#redirecting-output-when-invoking-script)
+        - [redirecting output from within a script](#redirecting-output-from-within-a-script)
+
     - [Paths](#Paths)
 
         - [check if file or directory exists](#check-if-file-or-directory-exists)
         - [Convert relative path to absolute](#Convert-relative-path-to-absolute)
         - [Create directory if it does not exist](#Create-directory-if-it-does-not-exist)
         - [Get folder where script lives](#Get-folder-where-script-lives)
+
+    - [Process IDs (pids)](#Process-IDs-pids)
+
+        - [get PID of currently running script](#get-PID-of-currently-running-script)
+        - [get PID of last background process started](#get-PID-of-last-background-process-started)
+        - [using grep and awk to find PID for process name](#using-grep-and-awk-to-find-PID-for-process-name)
 
     - [Program control](#Program-control)
 
@@ -287,6 +298,65 @@ Example: `if [[ $DEBUG = true ]]`
 
 - from: [https://www.golinuxcloud.com/bash-compare-numbers/](https://www.golinuxcloud.com/bash-compare-numbers/)
 
+## Output
+
+### redirecting output when invoking script
+
+- To redirect output when calling a script or command, append "` > <output_file_path> 2>&1`" to the end of the command.
+
+    - The "` > <output_file_path>`" redirects standard out to the file you specify.
+    - The "` 2>&1`" redirects standard error to the same place as standard out.
+
+- To truncate output file rather than append, use "`>>`" instead of "`>`".
+- To redirect output so it is not stored, redirect to "`/dev/null`". This effectively causes the output to be discarded.
+
+More details:
+
+- other options (`script` command, bash-specific `&>`): [https://stackoverflow.com/questions/16842014/redirect-all-output-to-file-using-bash-on-linux](https://stackoverflow.com/questions/16842014/redirect-all-output-to-file-using-bash-on-linux)
+- append versus truncate: [https://stackoverflow.com/questions/876239/how-to-redirect-and-append-both-stdout-and-stderr-to-a-file-with-bash](https://stackoverflow.com/questions/876239/how-to-redirect-and-append-both-stdout-and-stderr-to-a-file-with-bash)
+- detailed look at additional options (pipes, cat, tr, tee, etc.): [https://linuxconfig.org/introduction-to-bash-shell-redirections](https://linuxconfig.org/introduction-to-bash-shell-redirections)
+- tee example: [https://www.howtogeek.com/299219/HOW-TO-SAVE-THE-OUTPUT-OF-A-COMMAND-TO-A-FILE-IN-BASH-AKA-THE-LINUX-AND-MACOS-TERMINAL/](https://www.howtogeek.com/299219/HOW-TO-SAVE-THE-OUTPUT-OF-A-COMMAND-TO-A-FILE-IN-BASH-AKA-THE-LINUX-AND-MACOS-TERMINAL/)
+- "`/dev/null`" details: [https://www.cyberciti.biz/faq/how-to-redirect-output-and-errors-to-devnull/](https://www.cyberciti.biz/faq/how-to-redirect-output-and-errors-to-devnull/)
+- more details on input, output, and error streams: [https://linuxhandbook.com/redirection-linux/](https://linuxhandbook.com/redirection-linux/)
+
+### redirecting output from within a script
+
+You can use the "`exec`" command to redirect output within a script.  Make two calls, one to redirect standard out, and one to redirect standard error:
+
+    # create path of file to capture output
+    output_redirect_file_path="${my_directory}/${start_date_time_stamp}-test_process_output-pid_$$.txt"
+
+    # redirect standard out:
+    exec 1>$output_redirect_file_path
+
+    # redirect standard error:
+    exec 2>&1
+
+Example that either redirects to `/dev/null` or a file based on output type:
+
+    # output redirect type?
+    if [[ -n "$output_redirect_type" ]]
+    then
+
+        # set - use value
+        if [[ "$output_redirect_type" == "${OUTPUT_REDIRECT_TYPE_DEV_NULL}" ]]
+        then
+            output_redirect_file_path="/dev/null"
+            exec 1>$output_redirect_file_path
+            exec 2>&1
+        elif [[ "$output_redirect_type" == "${OUTPUT_REDIRECT_TYPE_FILE}" ]]
+        then
+            output_redirect_file_path="${my_directory}/${start_date_time_stamp}-test_process_output-pid_$$.txt"
+            exec 1>$output_redirect_file_path
+            exec 2>&1
+        fi
+
+    fi #-- END check to see if output redirect type --#
+
+Notes:
+
+- Much more detail: [https://ops.tips/gists/redirect-all-outputs-of-a-bash-script-to-a-file/](https://ops.tips/gists/redirect-all-outputs-of-a-bash-script-to-a-file/)
+
 ## Paths
 
 ### check if file or directory exists
@@ -325,6 +395,29 @@ Example: `if [[ $DEBUG = true ]]`
 To get directory path of currently running script: `my_directory=$( dirname $( readlink -f "$0" ) )`
 
 - from: [https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself](https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself)
+
+## Process IDs (pids)
+
+### get PID of currently running script
+
+To get the PID of the currently running script, reference "`$$`".
+
+Notes:
+
+- [https://stackoverflow.com/questions/1908610/how-to-get-process-id-of-background-process](https://stackoverflow.com/questions/1908610/how-to-get-process-id-of-background-process)
+
+### get PID of last background process started
+
+To get the PID of the last background process started in the current process, reference "`$!`" immediately after starting the process (if you wait, something else might be started and overwrite...?).
+
+More details:
+
+- more detailed explanation: [https://serverfault.com/questions/205498/how-to-get-pid-of-just-started-process](https://serverfault.com/questions/205498/how-to-get-pid-of-just-started-process)
+- other options, including ways to kill child processes: [https://stackoverflow.com/questions/1908610/how-to-get-process-id-of-background-process](https://stackoverflow.com/questions/1908610/how-to-get-process-id-of-background-process)
+
+### using grep and awk to find PID for process name
+
+- confusing, but the code here works, the person was just trying to overwrite a read-only variable (PID): [https://unix.stackexchange.com/questions/400149/cant-capture-pid-from-background-process-started-in-a-sub-shell-thats-running](https://unix.stackexchange.com/questions/400149/cant-capture-pid-from-background-process-started-in-a-sub-shell-thats-running)
 
 ## Program control
 
