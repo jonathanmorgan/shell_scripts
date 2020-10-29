@@ -46,6 +46,10 @@
 
         - [If-then-elif-else](#If-then-elif-else)
         - [run command named in variable](#run-command-named-in-variable)
+        - [`sleep` command](#sleep-command)
+        - [repeat command every X seconds](#repeat-command-every-X-seconds)
+        - [repeat command X times](#repeat-command-X-times)
+        - [repeat command for a set amount of time](#repeat-command-for-a-set-amount-of-time)
 
     - [strings](#strings)
 
@@ -477,6 +481,52 @@ Delay format:
 - `#d` - number of days
 
 Where the number can be an integer or a decimal.
+
+### repeat command every X seconds
+
+To repeat a command every X seconds forever, you have options:
+
+- use `watch` command: `watch -n <seconds_between_execution> <command>`
+
+    - example: `watch -n 10 "free -m"`
+    - more details: [https://www.tecmint.com/run-repeat-linux-command-every-x-seconds/](https://www.tecmint.com/run-repeat-linux-command-every-x-seconds/)
+
+- use cron (more details TK).
+
+### repeat command X times
+
+- `for` loop:
+
+        for i in {1..5}; do date; done
+
+- `while` loop:
+
+        ## define end value ##
+        END=5
+
+        ## print date five times ##
+        x=$END
+        while [ $x -gt 0 ];
+        do
+            date
+            x=$(($x-1))
+        done
+
+- notes that include `seq`, perl and python: [https://www.cyberciti.biz/faq/bsd-appleosx-linux-bash-shell-run-command-n-times/](https://www.cyberciti.biz/faq/bsd-appleosx-linux-bash-shell-run-command-n-times/)
+
+### repeat command for a set amount of time
+
+    #!/bin/bash
+
+    runtime="5 minute"
+    endtime=$(date -ud "$runtime" +%s)
+
+    while [[ $(date -u +%s) -le $endtime ]]
+    do
+        echo "Time Now: `date +%H:%M:%S`"
+        echo "Sleeping for 10 seconds"
+        sleep 10
+    done
 
 ## Strings
 
