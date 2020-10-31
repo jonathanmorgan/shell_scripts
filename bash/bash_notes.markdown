@@ -752,8 +752,7 @@ You can use the `date` function to generate durations in milliseconds (or micro-
 
 - milliseconds: `date -u -%s%3N`
 - microseconds: `date -u -%s%6N`
-- picoseconds?: `date -u -%s%9N`
-- nanoseconds: `date -u -%s%N`
+- nanoseconds: `date -u -%s%N` or `date -u -%s%9N`
 
 More information:
 
