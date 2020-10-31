@@ -6,7 +6,7 @@
     - [include user’s private ~/bin in path](#include-users-private-bin-in-path)
     - [Setting prompt content and colors](#Setting-prompt-content-and-colors)
 
--   [Scripting](#Scripting)
+- [Scripting](#Scripting)
 
     - [Arrays](#Arrays)
 
@@ -739,6 +739,25 @@ To repeat a command every X seconds forever, you have options:
 - Not this:
 
     - `cp "${CUSP_HOME}/*.kdbx" "${CRYPTED_DIRECTORY}/"`
+
+## Date-time
+
+### date function for timing
+
+You can use the `date` function to generate durations in milliseconds (or micro-, pico-, or nanoseconds) by combining seconds from epoch ("%s") with nanoseconds within current second (%N) to create numeric timestamps with your desired precision: `date -u -%s%N`
+
+- milliseconds: `date -u -%s%3N`
+- microseconds: `date -u -%s%6N`
+- picoseconds?: `date -u -%s%9N`
+- nanoseconds: `date -u -%s%N`
+
+More information:
+
+- more options, including `time`, perl, python, etc.:
+
+    - [https://stackoverflow.com/questions/16548528/command-to-get-time-in-milliseconds](https://stackoverflow.com/questions/16548528/command-to-get-time-in-milliseconds)
+    - [https://serverfault.com/questions/151109/how-do-i-get-the-current-unix-time-in-milliseconds-in-bash/588705#588705](https://serverfault.com/questions/151109/how-do-i-get-the-current-unix-time-in-milliseconds-in-bash/588705#588705)
+- converter: [https://www.bing.com/search?q=how+many+milliseconds+in+a+second&cvid=00a3fc91c32c4c6cb82dac87906b5a6a&PC=U531](https://www.bing.com/search?q=how+many+milliseconds+in+a+second&cvid=00a3fc91c32c4c6cb82dac87906b5a6a&PC=U531)
 
 ## Getopts (with detailed examples)**
 
