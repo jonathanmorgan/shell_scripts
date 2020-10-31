@@ -19,6 +19,10 @@
 
         - [Boolean comparison](#Boolean-comparison)
 
+    - [Date-time](#Date-time)
+
+        - [date function for timing](#date-function-for-timing)
+
     - [Numbers](#Numbers)
 
         - [Arithmetic](#Arithmetic)
