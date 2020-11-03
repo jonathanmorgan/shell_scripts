@@ -13,6 +13,8 @@
         - [declare an array](#declare-an-array)
         - [length of array](#length-of-array)
         - [check if array is empty](#check-if-array-is-empty)
+        - [reference item in array](#reference-item-in-array)
+        - [loop over indices in an array](#loop-over-indices-in-an-array)
         - [loop over items in an array](#loop-over-items-in-an-array)
 
     - [Booleans](#Booleans)
@@ -23,6 +25,7 @@
 
         - [date function for timing](#date-function-for-timing)
 
+    - [Files](#Files)
     - [Numbers](#Numbers)
 
         - [Arithmetic](#Arithmetic)
@@ -64,6 +67,12 @@
             - [Pattern matching in bash](#Pattern-matching-in-bash)
 
         - [string parsing](#string-parsing)
+
+            - [string parsing - single character - IFS...read](#string-parsing---single-character---IFS...read)
+            - [string parsing - multiple-character delimiter](#string-parsing---multiple-character-delimiter)
+            - [string parsing example - load average](#string-parsing-example---load-average)
+            - [string parsing example - free memory AND awk](#string-parsing-example---free-memory-AND-awk)
+
         - [File paths](#File-paths)
 
     - [variables](#variables)
@@ -250,6 +259,38 @@ Examples:
 
 - from: https://serverfault.com/questions/477503/check-if-array-is-empty-in-bash
 
+### reference item in array
+
+To reference an item at a particular index in an array (0-indexed), use square bracket notation after the name of the array, inside "`${}`". For example, retrieve the 4th item (index 3):
+
+    value4="${my_array[3]}"
+
+To retrieve an index stored in a variable, use dollar-sign notation, not quotes, inside the square brackets:
+
+    chosen_index=3
+    value4="${my_array[$chosen_index]}"
+
+From: [https://stackoverflow.com/questions/15028567/get-the-index-of-a-value-in-a-bash-array](https://stackoverflow.com/questions/15028567/get-the-index-of-a-value-in-a-bash-array)
+
+### loop over indices in an array
+
+To loop over the indices in an array, rather than the values, precede the name of the array variable with an exclamation point in your for loop, inside the curly braces: `for i in "${!my_array[@]}"; do`
+
+Example:
+
+    #!/bin/bash
+
+    my_array=(red orange green)
+    value='green'
+
+    for i in "${!my_array[@]}"; do
+        if [[ "${my_array[$i]}" = "${value}" ]]; then
+            echo "${i}";
+        fi
+    done
+
+From: [https://stackoverflow.com/questions/15028567/get-the-index-of-a-value-in-a-bash-array](https://stackoverflow.com/questions/15028567/get-the-index-of-a-value-in-a-bash-array)
+
 ### loop over items in an array
 
     for item in "${arr[@]}"
@@ -264,6 +305,14 @@ Examples:
 To compare boolean values in if, while, etc., use "`[]`" or "`[[]]`" operators, and use equal sign.
 
 Example: `if [[ $DEBUG = true ]]`
+
+## Files
+
+- use `cat` to combine files together. Example:
+
+        cat *.txt >> combined_text.txt
+
+    - More examples and explanation: [https://stackoverflow.com/questions/4969641/how-to-append-one-file-to-another-in-linux-from-the-shell](https://stackoverflow.com/questions/4969641/how-to-append-one-file-to-another-in-linux-from-the-shell)
 
 ## Numbers
 
@@ -628,46 +677,179 @@ To repeat a command every X seconds forever, you have options:
 
 ### string parsing
 
-        # return reference
-        CUSP_ID_NUMBER_OUT=-1
+#### string parsing - single character - IFS...read
 
-        function parse_CUSP_ID_number()
-        {
+The basic way to split a string on a single character is to use the "IFS...read" pattern:
 
+    parse_on="_"
+    IFS=${parse_on} read -ra output_array <<< "${string_to_parse}"
 
+Each individual character in the IFS variable is treated as a delimiter. The default is all white space characters.
 
-            # example CUSP ID: cusp_12345
-            # parse on underscore, take the last token to get ID number.
+You can set IFS to multiple characters, but it will treat each as a separate delimiter, rather than delimiting only on the combined string.
 
-            # parameters
-            local CUSP_ID_IN="$1"
+To just place a character in IFS, surround it with single quotes. Example of a space:
 
-            # declare variables
-            local CUSP_ID_TOKEN_ARRAY=
-            local CUSP_ID_NUMBER=
-            local parse_on="_"
+    IFS=' ' read -ra output_array <<< "${string_to_parse}"
 
-            # parse the number off the end of the CUSP ID.
-            IFS=${parse_on} read -ra CUSP_ID_TOKEN_ARRAY <<< "${CUSP_ID_IN}"
+More detailed example:
 
-            for i in "${CUSP_ID_TOKEN_ARRAY[@]}"; do
+    # return reference
+    CUSP_ID_NUMBER_OUT=-1
 
-                # process "$i"
-                CUSP_ID_NUMBER="$i"
+    function parse_CUSP_ID_number()
+    {
 
-            done
+        # example CUSP ID: cusp_12345
+        # parse on underscore, take the last token to get ID number.
 
-            CUSP_ID_NUMBER_OUT="$CUSP_ID_NUMBER"
+        # parameters
+        local CUSP_ID_IN="$1"
 
-            # DEBUG
-            if [[ $DEBUG = true ]]
-            then
+        # declare variables
+        local CUSP_ID_TOKEN_ARRAY=
+        local CUSP_ID_NUMBER=
+        local parse_on="_"
 
-                echo "!!!! CUSP ID number = $CUSP_ID_NUMBER_OUT"
+        # parse the number off the end of the CUSP ID.
+        IFS=${parse_on} read -ra CUSP_ID_TOKEN_ARRAY <<< "${CUSP_ID_IN}"
 
-            fi
+        for i in "${CUSP_ID_TOKEN_ARRAY[@]}"; do
 
-        }
+            # process "$i"
+            CUSP_ID_NUMBER="$i"
+
+        done
+
+        CUSP_ID_NUMBER_OUT="$CUSP_ID_NUMBER"
+
+        # DEBUG
+        if [[ $DEBUG = true ]]
+        then
+
+            echo "!!!! CUSP ID number = $CUSP_ID_NUMBER_OUT"
+
+        fi
+
+    }
+
+Notes: [https://www.tutorialkart.com/bash-shell-scripting/bash-split-string/](https://www.tutorialkart.com/bash-shell-scripting/bash-split-string/)
+
+#### string parsing - multiple-character delimiter
+
+You can split on a multiple-character delimiter, but to do so, you'll need to either use bash gobbledy-gook ("idiomatic expressions") or a readable and comprehensible but longer combination of `if`, `while`, and `substring`.
+
+From: [https://www.tutorialkart.com/bash-shell-scripting/bash-split-string/](https://www.tutorialkart.com/bash-shell-scripting/bash-split-string/)
+
+Idiomatic (confusing - and, no comments to enhance mystique?):
+
+    #!/bin/bash
+
+    str="LearnABCtoABCSplitABCaABCString"
+    delimiter=ABC
+    s=$str$delimiter
+    array=();
+    while [[ $s ]]; do
+        array+=( "${s%%"$delimiter"*}" );
+        s=${s#*"$delimiter"};
+    done;
+    declare -p array
+
+Comprehensible (for people "new to bash shell scripting"... sigh):
+
+    #!/bin/bash
+
+    # main string
+    str="LearnABCtoABCSplitABCaABCStringABCinABCBashABCScripting"
+
+    # delimiter string
+    delimiter="ABC"
+
+    #length of main string
+    strLen=${#str}
+    #length of delimiter string
+    dLen=${#delimiter}
+
+    #iterator for length of string
+    i=0
+    #length tracker for ongoing substring
+    wordLen=0
+    #starting position for ongoing substring
+    strP=0
+
+    array=()
+    while [ $i -lt $strLen ]; do
+        if [ $delimiter == ${str:$i:$dLen} ]; then
+            array+=(${str:strP:$wordLen})
+            strP=$(( i + dLen ))
+            wordLen=0
+            i=$(( i + dLen ))
+        fi
+        i=$(( i + 1 ))
+        wordLen=$(( wordLen + 1 ))
+    done
+    array+=(${str:strP:$wordLen})
+
+    declare -p array
+
+#### string parsing example - load average
+
+    # load averages
+    proc_loadavg_contents="$( cat /proc/loadavg )"
+    #echo "==========> proc_loadavg_contents: ${proc_loadavg_contents}"
+
+    # split on space
+    IFS=' ' read -ra load_item_array <<< "${proc_loadavg_contents}"
+
+    # grab individual values
+    load_1="${load_item_array[0]}"
+    load_5="${load_item_array[1]}"
+    load_15="${load_item_array[2]}"
+    load_proc_info="${load_item_array[3]}"
+    load_last_pid="${load_item_array[4]}"
+
+    # parse out process info.
+    IFS='/' read -ra load_procs_item_array <<< "${load_proc_info}"
+    load_running_procs="${load_procs_item_array[0]}"
+    load_total_procs="${load_procs_item_array[1]}"
+
+    #echo "==========> parsed proc_loadavg_contents: ${load_1} ${load_5} ${load_15} ${load_running_procs}/${load_total_procs} ${load_last_pid}"
+
+Notes:
+
+    - on `/proc/loadavg`, from RedHat: [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-loadavg](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-loadavg)
+    - on meaning of numbers in `/proc/loadavg`: [https://stackoverflow.com/questions/11987495/linux-proc-loadavg](https://stackoverflow.com/questions/11987495/linux-proc-loadavg)
+
+#### string parsing example - free memory AND awk
+
+    # retrieve values
+    free_memory_items=$( free -m | awk 'NR==2{print $2 " " $3 " " $4 " " $5 " " $6 " " $7}' )
+    free_swap_items=$( free -m | awk 'NR==3{print $2 " " $3 " " $4}' )
+
+    # parse and store memory
+    IFS=' ' read -ra free_memory_array <<< "${free_memory_items}"
+    mem_total="${free_memory_array[0]}"
+    mem_used="${free_memory_array[1]}"
+    mem_free="${free_memory_array[2]}"
+    mem_shared="${free_memory_array[3]}"
+    mem_cache="${free_memory_array[4]}"
+    mem_available="${free_memory_array[5]}"
+
+    # parse and store swap
+    IFS=' ' read -ra free_swap_array <<< "${free_swap_items}"
+    swap_total="${free_swap_array[0]}"
+    swap_used="${free_swap_array[1]}"
+    swap_free="${free_swap_array[2]}"
+
+Notes:
+
+- basic strategy: [https://stackoverflow.com/questions/33774260/how-to-get-memory-usage-in-a-variable-using-shell-script/33774377#33774377](https://stackoverflow.com/questions/33774260/how-to-get-memory-usage-in-a-variable-using-shell-script/33774377#33774377)
+- many more options: [https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load](https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load)
+- more on awk:
+
+    - basic examples: [https://www.tutorialspoint.com/awk/awk_basic_examples.htm](https://www.tutorialspoint.com/awk/awk_basic_examples.htm)
+    - more examples: [https://www.thegeekstuff.com/2010/01/awk-introduction-tutorial-7-awk-print-examples/](https://www.thegeekstuff.com/2010/01/awk-introduction-tutorial-7-awk-print-examples/)
+    - awk chain: [https://www.2daygeek.com/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/](https://www.2daygeek.com/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/)
 
 ### File paths
 
