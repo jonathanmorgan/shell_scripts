@@ -68,7 +68,7 @@
 
         - [string parsing](#string-parsing)
 
-            - [string parsing - single character - IFS...read](#string-parsing---single-character---IFS...read)
+            - [string parsing - single character - IFS...read](#string-parsing---single-character---ifsread)
             - [string parsing - multiple-character delimiter](#string-parsing---multiple-character-delimiter)
             - [string parsing example - load average](#string-parsing-example---load-average)
             - [string parsing example - free memory AND awk](#string-parsing-example---free-memory-AND-awk)
