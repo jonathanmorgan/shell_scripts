@@ -11,6 +11,7 @@
     - [Arrays](#Arrays)
 
         - [declare an array](#declare-an-array)
+        - [add items to array](#add-items-to-array)
         - [length of array](#length-of-array)
         - [check if array is empty](#check-if-array-is-empty)
         - [reference item in array](#reference-item-in-array)
@@ -223,6 +224,27 @@ Notes:
 ### declare an array
 
     my_array=()
+
+    # OR use "declare" command:
+    declare -a my_array
+
+### add items to array
+
+To add an item at a particular index in an array (0-indexed), use square bracket notation after the name of the array to referene the particular index, then "=", then the value.
+
+For example, to add items to indexes 0 through 3 of an array:
+
+    my_array[0]="value1"
+    my_array[1]="value2"
+    my_array[2]="value3"
+    my_array[3]="value4"
+
+To append an item to the end of an array, use "+=" operator and place the value you are appending inside parentheses. Example:
+
+    my_array+=( "value1" )
+    my_array+=( "value2" )
+    my_array+=( "value3" )
+    my_array+=( "value4" )
 
 ### length of array
 
