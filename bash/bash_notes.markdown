@@ -888,9 +888,9 @@ Notes:
 
 ### Check if set or populated
 
-- Check if a variable is, inside either "`[]`" or "`[[]]`":
+- Check, inside either "`[]`" or "`[[]]`", if a varaible:
 
-    - empty/not set - use "-z" (is variable empty? true = empty/not set, false = not empty/is set):
+    - is _empty/not set_ - use "-z" (is variable empty? true = empty/not set, false = not empty/is set):
 
             if [ -z ${1} ]
             then
@@ -899,7 +899,7 @@ Notes:
                 echo "var is set to '$1'"
             fi
 
-    - populated/set - use "-n" (is variable populated/set? true = set, false = not set):
+    - is _populated/set_ - use "-n" (is variable populated/set? true = set, false = not set):
 
             if [ -n "${1}" ]
             then
@@ -911,6 +911,11 @@ Notes:
     - To check the opposite, you put a "`!`" in front of the "`-n`" or "`-z`", separated before and after by a space.
 
 - "`[]`" and "`[[]]`" are commands, so you must surround elements of the command with spaces, including spaces after the opening square bracket(s) and before the closing square bracket(s).
+- Note, "`[[]]`" is bash-only, more reliable, but not posix compliant:
+
+    - [https://stackoverflow.com/questions/3427872/whats-the-difference-between-and-in-bash](https://stackoverflow.com/questions/3427872/whats-the-difference-between-and-in-bash)
+    - [https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba](https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba)
+
 - From: [https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash\#13864829](https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash#13864829)
 
 ### Use variable value in reference to a separate variable
