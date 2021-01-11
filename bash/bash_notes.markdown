@@ -888,7 +888,7 @@ Notes:
 
 ### Check if set or populated
 
-- Check, inside either "`[]`" or "`[[]]`", if a varaible:
+- Check, inside either "`[]`" or "`[[]]`", if a variable:
 
     - is _empty/not set_ - use "-z" (is variable empty? true = empty/not set, false = not empty/is set):
 
