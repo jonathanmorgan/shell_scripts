@@ -458,8 +458,21 @@ Notes:
 
         fi
 
--   Use "-d" to check if directory exists.
--   To check if does not exist, place an exclamation point before the -f or -d.
+- Different file types:
+
+    - Use "-f" to check if file exists.
+    - Use "-d" to check if directory exists.
+    - is _present and a symbolic link_ - use "-L" (true = file is present and a symbolic link, false either means not present or not a link):
+
+            if [[ -L "${file}" ]]
+            then
+                echo "file is present and is a symbolic link: '${1}'"
+            else
+                echo "file is either not present or not a link."
+            fi
+
+- To check the opposite (does not exist), you put a "`!`" in front of the "`-f`", "`-d`", or "`-L`", separated before and after by a space. You can also put the "`!`" in front of the brackets, separated by a space, to negate the entire test.
+
 
 ### Convert relative path to absolute
 
@@ -908,10 +921,9 @@ Notes:
                 echo "var is empty"
             fi
 
-    - To check the opposite, you put a "`!`" in front of the "`-n`" or "`-z`", separated before and after by a space.
-
+- To check the opposite, you put a "`!`" in front of the "`-n`" or "`-z`", separated before and after by a space. You can also put the "`!`" in front of the brackets, separated by a space, to negate the entire test.
 - "`[]`" and "`[[]]`" are commands, so you must surround elements of the command with spaces, including spaces after the opening square bracket(s) and before the closing square bracket(s).
-- Note, "`[[]]`" is bash-only, more reliable, but not posix compliant:
+- Note, "`[[]]`" is bash-only, more reliable (better able to deal with quoted strings, special characters, etc.), but not posix compliant:
 
     - [https://stackoverflow.com/questions/3427872/whats-the-difference-between-and-in-bash](https://stackoverflow.com/questions/3427872/whats-the-difference-between-and-in-bash)
     - [https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba](https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba)
