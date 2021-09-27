@@ -8,3 +8,4 @@ This repository contains:
 - A [wiki](https://github.com/jonathanmorgan/shell_scripts/wiki), which includes:
 
     - [bash_notes](https://github.com/jonathanmorgan/shell_scripts/wiki/bash_notes)
+    - [powershell_notes](https://github.com/jonathanmorgan/shell_scripts/wiki/powershell_notes)
